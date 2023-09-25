@@ -4,7 +4,7 @@ const fs = require("fs")
 const { genid } = require("../db/DbUtils")
 
 router.post("/uploadImg", async (req, res) => {
- 
+
     if (!req.files) {
         res.send({
             "code": 9999, // 只要不等于 0 就行
@@ -20,7 +20,7 @@ router.post("/uploadImg", async (req, res) => {
         //获取文件名字后缀
         let file_ext = file.originalname.substring(file.originalname.lastIndexOf(".") + 1)
         //随机文件名字
-        let file_name = file.originalname
+        let file_name = file.originalname.split('.')[0] + '_' + genid.NextId().toString() + '.' + file_ext
 
         //修改名字加移动文件
         fs.renameSync(
@@ -42,9 +42,9 @@ router.post("/uploadImg", async (req, res) => {
 })
 
 router.get("/getImage/:key", async (req, res) => {
-   
+
     res.sendFile(`/assets/upload/img/${req.params.key}`, {
-        root: __dirname+'/../',
+        root: __dirname + '/../',
         headers: {
             'Content-Type': 'image/jpge',
         }

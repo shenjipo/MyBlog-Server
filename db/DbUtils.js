@@ -23,4 +23,4 @@ db.async.run = (sql, params) => {
 }
 const GenId = require("../utils/SnowFlake")
 const genid = new GenId({ WorkerId: 1 })
-module.exports = { db }
+module.exports = { db, genid }
