@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
 })
 app.use("/api", require("./service/login"))
 app.use("/api", require("./service/file"))
-app.use("/api", require("./service/blog"))
+app.use("/api", require("./service/article"))
 
 
 
