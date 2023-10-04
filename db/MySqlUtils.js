@@ -12,4 +12,12 @@ const mysqlInstance = mysql.createConnection({
 // 执行连接操作
 mysqlInstance.connect()
 
+mysqlInstance.async = {}
+mysqlInstance.async.run = (sql, params) => {
+    return new Promise((resolve, reject) => {
+        mysqlInstance.query(sql, params, (err, rows) => {
+            resolve({ err, rows })
+        })
+    })
+}
 module.exports = { mysqlInstance }

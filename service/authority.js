@@ -55,3 +55,4 @@ const verifyToken = (token, res) => {
     })
 
 }
+module.exports = { verifyToken }
