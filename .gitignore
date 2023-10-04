@@ -1,8 +1,9 @@
 .DS_Store
 node_modules
 /dist
-/db/blog.sqlite3
+/db
 assets
+
 
 # local env files
 .env.local

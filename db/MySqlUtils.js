@@ -4,7 +4,7 @@ const mysql = require('mysql') // 引入 mysql
 const mysqlInstance = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '15896302145.sa',
+    password: '15896302145.saA',
     port: '3306',
     database: 'blog'
 })
