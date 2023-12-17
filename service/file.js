@@ -1,8 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const fs = require("fs")
-const { genid } = require("../db/DbUtils")
-
+const { v4: uuidv4 } = require("uuid")
 router.post("/uploadImg", async (req, res) => {
 
     if (!req.files) {
@@ -20,7 +19,7 @@ router.post("/uploadImg", async (req, res) => {
         //获取文件名字后缀
         let file_ext = file.originalname.substring(file.originalname.lastIndexOf(".") + 1)
         //随机文件名字
-        let file_name = file.originalname.split('.')[0] + '_' + genid.NextId().toString() + '.' + file_ext
+        let file_name = file.originalname.split('.')[0] + '_' + uuidv4().toString() + '.' + file_ext
 
         //修改名字加移动文件
         fs.renameSync(

@@ -12,11 +12,11 @@ router.post("/saveBlog", async (req, res) => {
     const userInfo = await verifyToken(token, res)
     if (!userInfo) return
 
-    let { title, content, author, createTime, isPreviewShow } = req.body;
+    let { title, content, author, createTime, isPreviewShow, uuid } = req.body;
     let id = uuidv4()
-    const insert_sql = "INSERT INTO `article`(`id`,`title`,`content`,`author`, `createTime`, `isPreviewShow`) VALUES (?,?,?,?,?,?)"
+    const insert_sql = "INSERT INTO `article`(`id`,`title`,`content`,`author`, `createTime`, `isPreviewShow`, `author_uuid`) VALUES (?,?,?,?,?,?,?)"
 
-    let params = [id, title, content, author, createTime, isPreviewShow]
+    let params = [id, title, content, author, createTime, isPreviewShow, uuid]
     mysqlInstance
     let { err, rows } = await mysqlInstance.async.run(insert_sql, params)
 
@@ -44,9 +44,11 @@ router.post("/queryBlogList", async (req, res) => {
     let token = req.headers['authorization']
     const userInfo = await verifyToken(token, res)
     if (!userInfo) return
-    const sql = "select `id`, `title`, `createTime`, `isPreviewShow`, `updateTime` from `article`"
 
-    let { err, rows } = await mysqlInstance.async.run(sql, [])
+    let { uuid } = req.body;
+    const sql = "select `id`, `title`, `createTime`, `isPreviewShow`, `updateTime` from `article` where `author_uuid` = ?"
+
+    let { err, rows } = await mysqlInstance.async.run(sql, [uuid])
     if (err == null && rows.length > 0) {
         res.send({
             code: 200,
