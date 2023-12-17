@@ -2,7 +2,7 @@ const WebSocket = require('ws')
 
 const server = new WebSocket.Server({ port: 3001 })
 
-let currOnoline = []
+let currOnoline = new Map()
 let interval
 let mp = new Map()
 const broadcastMessage = (message, actionName) => {
@@ -27,14 +27,26 @@ server.on('connection', (ws, req) => {
     ws.on('message', function incoming(message) {
         try {
             message = JSON.parse(message)
-            console.log('received: %s from %s', message, clientName);
+
             switch (message.actionName) {
                 case 'count':
-                    currOnoline.push(message.username)
                     mp.set(ws, message.username)
+                    if (currOnoline.get(message.username)) {
+                        currOnoline.set(message.username, {
+                            count: currOnoline.get(message.username).count + 1
+                        })
+
+                    } else {
+                        currOnoline.set(message.username, {
+                            count: 1
+                        })
+                    }
+
+
                     interval && clearInterval(interval)
                     interval = setInterval(() => {
-                        broadcastMessage(currOnoline, 'count')
+                        console.log(currOnoline)
+                        broadcastMessage(Array.from(currOnoline.keys()), 'count')
                     }, 1000)
 
                     break
@@ -43,14 +55,19 @@ server.on('connection', (ws, req) => {
             }
 
 
-        } catch {
-            console.log('ws数据解析失败')
+        } catch (err) {
+            console.log('ws数据解析失败', err)
         }
     });
 
     ws.on('close', (code, msg) => {
         let username = mp.get(ws)
-        currOnoline = currOnoline.filter(item => item !== username)
+        currOnoline.set(username, { count: --currOnoline.get(username).count })
+        console.log(currOnoline, username)
+        if (currOnoline.get(username).count === 0) {
+            currOnoline.delete(username)
+        }
+
     });
 })
 
